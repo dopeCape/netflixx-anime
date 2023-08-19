@@ -8,7 +8,7 @@ export default function AnimeCard({ anime }: { anime: IAnime }) {
     <div
       className="h-full w-full text-white"
       onClick={() => {
-        router.push(`/watch/${anime.id}`);
+        void router.push(`/watch/${anime.id}`);
       }}
     >
       <img
