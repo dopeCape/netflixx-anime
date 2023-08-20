@@ -1,4 +1,5 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import * as bcrypt from "bcrypt";
 import { type GetServerSidePropsContext } from "next";
 import {
   getServerSession,
@@ -6,68 +7,100 @@ import {
   type DefaultSession,
 } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
+import CredentialsProvider from "next-auth/providers/credentials";
 import { env } from "@/env.mjs";
 import { prisma } from "@/server/db";
+import { api } from "@/utils/api";
+import { randomUUID } from "crypto";
 
-/**
- * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
- * object and keep type safety.
- *
- * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
- */
 declare module "next-auth" {
   interface Session extends DefaultSession {
     user: DefaultSession["user"] & {
       id: string;
-      // ...other properties
-      // role: UserRole;
     };
   }
-
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
 }
 
-/**
- * Options for NextAuth.js used to configure adapters, providers, callbacks, etc.
- *
- * @see https://next-auth.js.org/configuration/options
- */
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-      },
-    }),
+    jwt({ account, user, token }) {
+      token.id = "123";
+      return token;
+    },
+    session({ session, token, user }) {
+      if (session.user) {
+        session.user.id = token.sub;
+      }
+      return session;
+    },
   },
+
   adapter: PrismaAdapter(prisma),
   providers: [
     DiscordProvider({
       clientId: env.DISCORD_CLIENT_ID,
       clientSecret: env.DISCORD_CLIENT_SECRET,
     }),
-    /**
-     * ...add more providers here.
-     *
-     * Most other providers require a bit more work than the Discord provider. For example, the
-     * GitHub provider requires you to add the `refresh_token_expires_in` field to the Account
-     * model. Refer to the NextAuth.js docs for the provider you want to use. Example:
-     *
-     * @see https://next-auth.js.org/providers/github
-     */
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        email: { label: "email", type: "text" },
+        password: { label: "Password", type: "password" },
+        type: { label: "Type", type: "text" },
+        username: { label: "UserName", type: "text" },
+      },
+      async authorize(credentials, req) {
+        if (credentials?.type == "login") {
+          const user = await prisma.user.findFirst({
+            where: {
+              email: credentials?.email,
+            },
+          });
+          if (user) {
+            if (await bcrypt.compare(credentials?.password, user.password)) {
+              return user;
+            } else {
+              return null;
+            }
+          } else {
+            return null;
+          }
+        } else {
+          try {
+            const user = await prisma.user.findUnique({
+              where: {
+                email: credentials?.email,
+              },
+            });
+            if (user != null) {
+              console.log(user)
+              return null;
+            }
+            const pass: string = await bcrypt.hash(credentials?.password, 5);
+            const createdUser = await prisma.user.create({
+              data: {
+                name: credentials?.username,
+                email: credentials?.email,
+                id: randomUUID(),
+                password: pass,
+              },
+            });
+            return createdUser;
+          } catch (error) {
+            return null
+          }
+        }
+      },
+    }),
   ],
+  session: {
+    strategy: "jwt",
+  },
+  jwt: {
+    maxAge: 60 * 60 * 24,
+  },
 };
 
-/**
- * Wrapper for `getServerSession` so that you don't need to import the `authOptions` in every file.
- *
- * @see https://next-auth.js.org/configuration/nextjs
- */
 export const getServerAuthSession = (ctx: {
   req: GetServerSidePropsContext["req"];
   res: GetServerSidePropsContext["res"];

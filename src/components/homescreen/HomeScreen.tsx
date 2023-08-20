@@ -1,8 +1,15 @@
+import { useEffect } from "react";
 import HomeScreenheader from "./HomeScreenHeader";
 import HomeScreenMidSection from "./HomeScreenMidSection";
-import Image from "next/image";
+import { useSession } from "next-auth/react";
 
 export default function HomeScreen() {
+  const { data, status } = useSession();
+  useEffect(() => {
+    console.log(data)
+  }, [data])
+
+
   return (
     <div className="flex h-full w-full flex-col  ">
       <div className="h-[70%] w-full overflow-hidden 2xl:h-[60%]">

@@ -1,8 +1,10 @@
 import { useRouter } from "next/router";
+import { useSession, signOut } from "next-auth/react";
 import GenricReaButton from "./GenricButtonRed";
 
 export default function HomeScreenheader() {
   const router = useRouter();
+  const { data: session, status } = useSession();
   return (
     <div className="absolute z-30 flex h-[10%] w-screen justify-between px-5 pt-5 2xl:justify-around ">
       <img
@@ -14,9 +16,17 @@ export default function HomeScreenheader() {
       <div className=" relative top-[10%] h-[40px] w-[100px] 2xl:left-[10%] ">
         <GenricReaButton
           func={() => {
-            void router.push("/login");
+            if (status == "authenticated") {
+              void signOut()
+
+            }
+            if (status == "unauthenticated") {
+
+              void router.push("/login");
+
+            }
           }}
-          text={"Sign in"}
+          text={status === "loading" ? "loading" : status == "authenticated" ? "logout" : status == "unauthenticated" ? "Sign in" : ""}
         />
       </div>
     </div>

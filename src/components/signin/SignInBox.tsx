@@ -1,13 +1,59 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import GenricReaButton from "../homescreen/GenricButtonRed";
+import { useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/router";
 import { isValidEmail } from "@/utils/helper";
 import Link from "next/link";
 
 export default function SignInBox() {
   const [pass, setPass] = useState<string>("");
   const [passWarning, setPassWarning] = useState<boolean>(false);
+  const [passWarningContent, setPassWarningContent] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [emailWarning, setEmailWarning] = useState<boolean>(false);
+  const [emailWarningContent, setEmailWarningContent] = useState<string>("");
+  const [loading, setLoadin] = useState<boolean>(false);
+  const router = useRouter();
+  const { data: session, status } = useSession();
+
+  useEffect(() => {
+    if (status == "authenticated") {
+      void router.push("/");
+    }
+  }, [status])
+
+
+  const handleSginIn = async () => {
+    if (!isValidEmail(email)) {
+      setEmailWarningContent("Invalid Emil")
+      setEmailWarning(true)
+      return;
+    }
+    if (pass.length == 0) {
+      setPassWarningContent("password must be atleast 4 char long")
+      setPassWarning(true)
+      return;
+
+    }
+    setLoadin(true)
+
+    const res = await signIn("credentials", {
+      email: email,
+      password: pass,
+      redirect: false,
+      type: "login"
+    })
+    setLoadin(false)
+    if (res?.error) {
+      setEmailWarningContent("Invalid credentials")
+      setPassWarningContent("Invalid credentials")
+      setEmailWarning(true)
+      setPassWarning(true)
+    }
+
+  }
+
 
   return (
     <div className="relative z-40 flex h-full w-full flex-col flex-wrap   justify-start bg-[#000000bf] px-16 text-white ">
@@ -26,6 +72,7 @@ export default function SignInBox() {
           onBlur={() => {
             if (!isValidEmail(email)) {
               setEmailWarning(true);
+              setEmailWarningContent("invalid email")
             } else {
               setEmailWarning(false)
 
@@ -39,19 +86,21 @@ export default function SignInBox() {
             } else {
               setEmailWarning(true)
 
+              setEmailWarningContent("invalid email")
+
             }
           }}
 
         />
         <label
           htmlFor="email"
-          className="absolute  top-4 z-10 origin-[0] -translate-y-6 scale-75 transform text-[18px] text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-[#8c8c8c] "
+          className="absolute  top-4 z-10 origin-[0] -translate-y-4 scale-75 transform text-[18px] text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-[#8c8c8c] "
         >
           Email
         </label>
       </div>{" "}
 
-      {emailWarning ? <div className="text-netflix_orange mt-1 text-[14px]">Enter a valid email</div> : null}
+      {emailWarning ? <div className="text-netflix_orange mt-1 text-[14px]">{emailWarningContent}</div> : null}
 
       <div className="relative mt-5 rounded-[5px]  bg-input_gray px-6 py-2 focus:ring-0 border-b-[3px] "
         style={{ borderBottomColor: `${passWarning ? "#E1680e" : "transparent"}` }}
@@ -64,6 +113,11 @@ export default function SignInBox() {
           onBlur={() => {
             if (pass.length < 4) {
               setPassWarning(true);
+              setPassWarningContent("password must have 4 chars")
+            } else {
+
+              setPassWarning(false);
+
             }
           }}
           placeholder=" "
@@ -71,33 +125,32 @@ export default function SignInBox() {
             setPass(e.target.value);
             if (e.target.value.length >= 4) {
               setPassWarning(false)
+            } else {
+              setPassWarning(true)
+
+              setPassWarningContent("password must have 4 chars")
             }
           }}
         />
         <label
           htmlFor="Password"
-          className="absolute  top-4 z-10 origin-[0] -translate-y-6 scale-75 transform text-[18px] text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-[#8c8c8c] "
+          className="absolute  top-4 z-10 origin-[0] -translate-y-4 scale-75 transform text-[18px] text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-[#8c8c8c] "
         >
           Password
         </label>
       </div>
-      {passWarning ? <div className="text-netflix_orange mt-1 text-[14px]">Password must be atleast 4 chars</div> : null}
+      {passWarning ? <div className="text-netflix_orange mt-1 text-[14px]">{passWarningContent}</div> : null}
       <div className="relative mt-[13%] h-[60px]">
         <GenricReaButton
-          func={() => {
-            return;
-          }}
+          disabled={loading}
+          state={loading}
+          func={
+            handleSginIn
+          }
           text={"Sign in"}
         />
       </div>
-      <div>
-        <input
-          type="checkbox"
-          className=" top-[16%]  mt-3 h-[15px] w-[30px] bg-input_gray outline-none"
-        />
-        <label className=" text-[#8c8c8c]">Remember me</label>
-      </div>
-      <h1 className=" mt-5 text-[18px] text-[#8c8c8c]">
+      <h1 className=" mt-10 text-[18px] text-[#8c8c8c]">
         New to Netflixx?
         <Link className="decoration-none cursor-pointer  text-white hover:underline " href={"/signup"}>
           {" "}
