@@ -74,7 +74,7 @@ export const authOptions: NextAuthOptions = {
               },
             });
             if (user != null) {
-              console.log(user)
+              console.log(user);
               return null;
             }
             const pass: string = await bcrypt.hash(credentials?.password, 5);
@@ -91,14 +91,13 @@ export const authOptions: NextAuthOptions = {
                     id: randomUUID(),
                     name: credentials?.username,
                     DisplayPisc: image,
-                  }
-
-                }
+                  },
+                },
               },
             });
             return createdUser;
           } catch (error) {
-            return null
+            return null;
           }
         }
       },

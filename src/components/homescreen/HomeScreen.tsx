@@ -1,14 +1,17 @@
-import { useEffect } from "react";
 import HomeScreenheader from "./HomeScreenHeader";
 import HomeScreenMidSection from "./HomeScreenMidSection";
 import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+
+import { useRouter } from "next/router";
 
 export default function HomeScreen() {
   const { data, status } = useSession();
+  // const user = GetUserData();
+  const router = useRouter();
   useEffect(() => {
-    console.log(data)
-  }, [data])
-
+    void router.push("/profiles");
+  }, []);
 
   return (
     <div className="flex h-full w-full flex-col  ">

@@ -1,9 +1,15 @@
 import { z } from "zod";
 
+import * as ImageAPi from "anime-images-api";
 import * as bcrypt from "bcrypt";
-
-import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "@/server/api/trpc";
 import { randomUUID } from "crypto";
+import { TRPCError } from "@trpc/server";
+import { User } from "@/lib/slices/userStore";
 
 export const userRouter = createTRPCRouter({
   signup: publicProcedure
@@ -70,4 +76,35 @@ export const userRouter = createTRPCRouter({
 
       return {};
     }),
+  getUser: protectedProcedure.query(async ({ ctx }) => {
+    const { session, prisma } = ctx;
+    const userr = await prisma.user.findUnique({
+      where: {
+        id: session.user.id,
+      },
+      include: {
+        watchspaces: true,
+      },
+    });
+    if (userr == null) {
+      throw new TRPCError({
+        message: "Internal server error",
+        code: "INTERNAL_SERVER_ERROR",
+      });
+    }
+    const user: User = {
+      name: userr.name,
+      profiles: userr.watchspaces,
+      id: userr.id,
+      email: userr.email
+    }
+    return { user };
+  }),
+  getRandomImage: publicProcedure.query(async () => {
+    const API = new ImageAPi();
+    let { image } = await API.sfw.wink();
+    return { image }
+
+
+  })
 });
