@@ -10,7 +10,8 @@ import DiscordProvider from "next-auth/providers/discord";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { env } from "@/env.mjs";
 import { prisma } from "@/server/db";
-import { api } from "@/utils/api";
+
+import * as ImageAPi from "anime-images-api";
 import { randomUUID } from "crypto";
 
 declare module "next-auth" {
@@ -77,12 +78,22 @@ export const authOptions: NextAuthOptions = {
               return null;
             }
             const pass: string = await bcrypt.hash(credentials?.password, 5);
+            const API = new ImageAPi();
+            let { image } = await API.sfw.wink();
             const createdUser = await prisma.user.create({
               data: {
                 name: credentials?.username,
                 email: credentials?.email,
                 id: randomUUID(),
                 password: pass,
+                watchspaces: {
+                  create: {
+                    id: randomUUID(),
+                    name: credentials?.username,
+                    DisplayPisc: image,
+                  }
+
+                }
               },
             });
             return createdUser;
