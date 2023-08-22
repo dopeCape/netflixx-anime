@@ -10,8 +10,10 @@ export default function HomeScreen() {
   // const user = GetUserData();
   const router = useRouter();
   useEffect(() => {
-    void router.push("/profiles");
-  }, []);
+    if (status == "authenticated") {
+      void router.push("/profiles");
+    }
+  }, [status]);
 
   return (
     <div className="flex h-full w-full flex-col  ">
