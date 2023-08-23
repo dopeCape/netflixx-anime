@@ -8,11 +8,12 @@ import { api } from "@/utils/api";
 export default function Browse() {
   const videoRef = useRef<HTMLVideoElement>();
   const [videoVisible, setVideoVisible] = useState(true);
-  const test = api.anime.getAnime.useQuery();
   const bannerTxtRef = useRef();
   const bannerImageRef = useRef();
 
-  const bannerAnime = api.anime.getBannerAnime.useQuery();
+  const bannerAnime = api.anime.getBannerAnime.useQuery(undefined, {
+    refetchOnWindowFocus: false,
+  });
 
   const imageRef = useRef();
   let video;
@@ -27,7 +28,7 @@ export default function Browse() {
     anime({
       targets: videoVisible ? videoRef.current : bannerImageRef.current,
       ...animationProps,
-      duration: 800,
+      duration: 500,
       easing: 'easeInOutQuad',
     });
   }, [videoVisible]);
@@ -42,6 +43,7 @@ export default function Browse() {
 
       if (videoRef.current && videoSource) {
         hlsRef.current = new Hls();
+        hlsRef.subtitleDisplay = false;
 
         if (Hls.isSupported()) {
           hlsRef.current.loadSource(videoSource);
@@ -62,7 +64,7 @@ export default function Browse() {
                   complete: () => {
                     setVideoVisible(false)
                   },
-                  easing: "easeInOutQuad",
+                  easing: "easeOutQuad",
                 });
                 anime({
                   targets: bannerTxtRef.current,
@@ -72,29 +74,29 @@ export default function Browse() {
                   easing: "easeOutQuad",
 
                 })
-
               }
-
-              if (Math.floor(videoRef.current.currentTime) === startSeconds + 10) {
+              if (Math.floor(videoRef.current.currentTime) === startSeconds + 5) {
                 anime({
                   targets: imageRef.current,
                   width: "300px",
                   top: "55%",
                   duration: 800,
                   easing: "easeOutQuad",
+                  begin: (anim) => {
+                    imageRef.current.style.width = "550px"; // Set initial opacity to hide the element
+                  },
                 });
                 anime({
                   targets: bannerTxtRef.current,
                   opacity: "0",
-                  top: "80%",
-                  duration: 500,
+                  top: "70%",
+                  duration: 800,
                   easing: "easeOutQuad",
 
                 })
               }
             }
           };
-
           videoRef.current.addEventListener("timeupdate", timeUpdateHandler);
         }
       }
@@ -123,7 +125,7 @@ export default function Browse() {
         <h1
           className="text-white absolute top-[55%] ml-10 z-50
         text-[26px] w-[700px]
-        font-bold
+        
         "
           ref={bannerTxtRef}
         >{bannerAnime.data?.dis}</h1>
@@ -138,8 +140,8 @@ export default function Browse() {
         ) : (
           <img
             ref={bannerImageRef}
-            src="naruto_cover.webp"
-            className="absolute top-0 w-full object-cover opacity-0"
+            src={bannerAnime.data?.img}
+            className="absolute top-0 w-full h-full object-cover opacity-0"
           />
         )}
       </div>
