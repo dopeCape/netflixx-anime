@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { useSession, signOut } from "next-auth/react";
 import GenricReaButton from "./GenricButtonRed";
+import NetflixLogo from "../../../public/netflix (1).svg"
 
 export default function HomeScreenheader() {
   const router = useRouter();
@@ -8,7 +9,7 @@ export default function HomeScreenheader() {
   return (
     <div className="absolute z-30 flex h-[10%] w-screen justify-between px-5 pt-5 2xl:justify-around ">
       <img
-        src="netflix.png"
+        src={NetflixLogo}
         alt="netflix"
         className="relative  z-30 w-[160px] 2xl:right-[10%] 2xl:w-[200px]"
       />
