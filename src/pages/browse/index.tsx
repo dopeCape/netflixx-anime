@@ -2,7 +2,7 @@
 "use client";
 import SearchArea from "@/components/SearchBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faVolumeXmark, faVolumeOff } from "@fortawesome/free-solid-svg-icons";
+import { faVolumeXmark, faVolumeHigh, faRotateRight, faPlay, faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import NavBar from "@/components/navbar/Narbar";
 import { useState, useEffect, useRef } from "react";
 import anime from "animejs";
@@ -93,8 +93,8 @@ export default function Browse() {
                 anime({
                   targets: bannerTxtRef.current,
                   opacity: "0",
-                  top: "70%",
-                  duration: 800,
+                  top: "60%",
+                  duration: 400,
                   easing: "easeOutQuad",
                 })
               }
@@ -115,7 +115,8 @@ export default function Browse() {
       <div className="absolute top-0 z-50 h-[5%] w-full bg-transparent">
         <NavBar />
       </div>
-      <div className="absolute top-0 z-40 h-[10%] w-full bg-gradient-to-b from-black"></div>
+      <div className="absolute top-0 z-40 h-[7%] w-full bg-gradient-to-b from-black"></div>
+
       <div className="absolute bottom-0 z-40 h-[20%] w-full bg-gradient-to-t from-black"></div>
       <div className="absolute top-0 z-10 h-screen w-screen overflow-hidden ">
         <img
@@ -124,19 +125,25 @@ export default function Browse() {
           ref={imageRef}
         />
         <h1
-          className="text-white absolute top-[55%] ml-10 z-50
+          className="text-white absolute top-[55%] ml-16 z-50
         text-[26px] w-[700px]
         "
           ref={bannerTxtRef}
         >{bannerAnime.data?.dis}</h1>
         {
-          videoVisible ? <div className="rounded-full p-3 border-white border-[2px] h-[60px] w-[60px] absolute z-50 top-[70%] right-[3%] cursor-pointer"
+          videoVisible ? <div className="rounded-full  border-white border-[2px] h-[60px] w-[60px] absolute z-50 top-[70%] right-[3%] cursor-pointer flex flex-wrap justify-center content-center"
             onClick={() => {
               setMuted(!muted)
             }}
-          > <FontAwesomeIcon className=" text-[35px] text-white " icon={muted ? faVolumeXmark : faVolumeOff} />
+          > <FontAwesomeIcon className=" text-[25px] text-white " icon={muted ? faVolumeXmark : faVolumeHigh} />
           </div>
-            : null
+            : <div
+              className="rounded-full  border-white border-[2px] h-[60px] w-[60px] absolute z-50 top-[70%] right-[3%] cursor-pointer flex flex-wrap justify-center content-center"
+              onClick={() => {
+                setVideoVisible(true)
+
+              }}
+            ><FontAwesomeIcon icon={faRotateRight} className="text-[25px] text-white" /></div>
         }
         {videoVisible ? (
           <video
@@ -152,8 +159,21 @@ export default function Browse() {
             className="absolute top-0 w-full h-full object-cover opacity-0"
           />
         )}
+        <div className="w-[500px] h-[60px] absolute z-50 top-[70%] ml-16 flex  ">
+          <button className="flex flex-wrap justify-center content-around w-[160px] bg-white hover:opacity-90 py-4 rounded-[5px]  border-none outline-none">
+            <FontAwesomeIcon icon={faPlay}
+              className="text-[35px] mr-3"
+            ></FontAwesomeIcon>
+            <span className="text-[25px]">Play</span>
+          </button>
+          <button className="flex flex-wrap justify-center content-around w-[250px] bg-[#6d6d6e] opacity-70 hover:opacity-30 py-4 rounded-[5px] ml-5 border-none outline-none ">
+            <FontAwesomeIcon icon={faCircleInfo}
+              className="text-[35px] mr-3 text-white "
+            ></FontAwesomeIcon>
+            <span className="text-[25px] text-white">More Info</span>
+          </button>
+        </div>
       </div>
-      <SearchArea />
     </div>
   );
 }
