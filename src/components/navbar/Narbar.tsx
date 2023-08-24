@@ -12,6 +12,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import SearchInput from "./SearchInput";
+import ProfileMenu from "./ProileMenu";
 export default function NavBar() {
   const user = GetUserData();
   const { data, status } = useSession()
@@ -106,17 +107,14 @@ export default function NavBar() {
         >Browse by genre</h1>
       </div>
 
-      <div className="ml-auto mr-10 mt-5 flex flex h-full w-[20%] flex-wrap content-center justify-end">
+      <div className="ml-auto mr-16 mt-5 flex flex h-full w-[20%] flex-wrap content-center justify-end">
         <div className="w-[250px] flex content-end flex-wrap">
           <SearchInput />
         </div>
         {status == "authenticated" ?
-          <div className="">
-            <img
-              src={user.profiles.filter((p) => p.id == profileId)[0]?.DisplayPisc}
-              className="w-[40px] h-[40px] rounded-[3px] ml-5"
-            />
-          </div>
+          <ProfileMenu
+            pic={user.profiles.filter((p) => p.id == profileId)[0]?.DisplayPisc}
+          />
           :
           <div className="w-[80px] ml-5">
             <GenricReaButton
