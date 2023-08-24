@@ -1,5 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 "use client";
 import SearchArea from "@/components/SearchBar";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faVolumeXmark, faVolumeOff } from "@fortawesome/free-solid-svg-icons";
 import NavBar from "@/components/navbar/Narbar";
 import { useState, useEffect, useRef } from "react";
 import anime from "animejs";
@@ -10,21 +13,20 @@ export default function Browse() {
   const [videoVisible, setVideoVisible] = useState(true);
   const bannerTxtRef = useRef();
   const bannerImageRef = useRef();
-
+  const [init, setInit] = useState<boolean>(false);
+  const [muted, setMuted] = useState(true);
   const bannerAnime = api.anime.getBannerAnime.useQuery(undefined, {
     refetchOnWindowFocus: false,
-  });
+    refetchOnMount: false,
+    retryOnMount: false,
 
+  });
   const imageRef = useRef();
-  let video;
   const hlsRef = useRef(null);
   useEffect(() => {
-    // Define the animation properties
     const animationProps = {
-      opacity: 1, // Fade in or fade out effect
+      opacity: 1,
     };
-
-    // Apply the animation using Anime.js
     anime({
       targets: videoVisible ? videoRef.current : bannerImageRef.current,
       ...animationProps,
@@ -40,18 +42,21 @@ export default function Browse() {
         end: endSeconds,
         start: startSeconds,
       } = bannerAnime.data;
-
       if (videoRef.current && videoSource) {
         hlsRef.current = new Hls();
-        hlsRef.subtitleDisplay = false;
+        if (Hls.isSupported() && !init) {
+          if (videoRef.current.paused) {
+            hlsRef.current.loadSource(videoSource);
+            hlsRef.current.attachMedia(videoRef.current);
+            hlsRef.current.on(Hls.Events.MANIFEST_PARSED, () => {
+              if (videoRef.current?.paused) {
+                videoRef.current.currentTime = startSeconds;
+                void videoRef.current.play();
+              }
+            });
 
-        if (Hls.isSupported()) {
-          hlsRef.current.loadSource(videoSource);
-          hlsRef.current.attachMedia(videoRef.current);
 
-          videoRef.current.currentTime = startSeconds;
-          void videoRef.current.play();
-
+          }
           const timeUpdateHandler = () => {
             if (videoRef.current) {
               if (videoRef.current.currentTime >= endSeconds) {
@@ -72,7 +77,6 @@ export default function Browse() {
                   top: "55%",
                   duration: 800,
                   easing: "easeOutQuad",
-
                 })
               }
               if (Math.floor(videoRef.current.currentTime) === startSeconds + 5) {
@@ -82,7 +86,7 @@ export default function Browse() {
                   top: "55%",
                   duration: 800,
                   easing: "easeOutQuad",
-                  begin: (anim) => {
+                  begin: (_a) => {
                     imageRef.current.style.width = "550px"; // Set initial opacity to hide the element
                   },
                 });
@@ -92,7 +96,6 @@ export default function Browse() {
                   top: "70%",
                   duration: 800,
                   easing: "easeOutQuad",
-
                 })
               }
             }
@@ -101,13 +104,11 @@ export default function Browse() {
         }
       }
     }
-
     return () => {
       if (hlsRef.current) {
-        hlsRef.current.destroy();
       }
     };
-  }, [bannerAnime]);
+  }, [bannerAnime, init]);
 
   return (
     <div className="flex h-screen w-screen flex-wrap content-center  justify-center bg-black">
@@ -125,15 +126,22 @@ export default function Browse() {
         <h1
           className="text-white absolute top-[55%] ml-10 z-50
         text-[26px] w-[700px]
-        
         "
           ref={bannerTxtRef}
         >{bannerAnime.data?.dis}</h1>
-
+        {
+          videoVisible ? <div className="rounded-full p-3 border-white border-[2px] h-[60px] w-[60px] absolute z-50 top-[70%] right-[3%] cursor-pointer"
+            onClick={() => {
+              setMuted(!muted)
+            }}
+          > <FontAwesomeIcon className=" text-[35px] text-white " icon={muted ? faVolumeXmark : faVolumeOff} />
+          </div>
+            : null
+        }
         {videoVisible ? (
           <video
+            muted={muted}
             ref={videoRef}
-            muted
             className="h-[100%] w-screen object-cover"
             id="video"
           ></video>
