@@ -8,6 +8,7 @@ export default {
         netflix_red: "#e50914",
         input_gray: "#333",
         netflix_orange: "#E1680e",
+        netflix_black: "#141414",
       },
     },
   },

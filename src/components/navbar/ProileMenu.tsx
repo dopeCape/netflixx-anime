@@ -19,7 +19,7 @@ export default function ProfileMenu({ pic }: { pic: string }) {
     )
   }, [visible])
   return (
-    <div className="flex w-[60px]  justify-center cursor-pointer"
+    <div className="flex w-[60px]  justify-center cursor-pointer relative "
       ref={iconRef}
       onMouseOver={() => {
         setVisible(true);
@@ -30,16 +30,6 @@ export default function ProfileMenu({ pic }: { pic: string }) {
         })
 
       }}
-      onMouseOut={
-        () => {
-          anime({
-            targets: carotRef.current,
-            rotate: 180,
-            duration: 400,
-          })
-          setVisible(false)
-        }
-      }
       onClick={() => {
         setVisible(false)
       }}
@@ -51,12 +41,8 @@ export default function ProfileMenu({ pic }: { pic: string }) {
       />
       {
         visible ?
-          <div>
-            <div className="absolute top-[130%] bg-transparent h-[30px] w-[80px] right-[2%]">
-
-            </div>
-
-            <div className=" absolute top-[180%] bg-black opacity-0 w-[250px] h-[400px] right-[2%]"
+          <div className=" ">
+            <div className=" absolute top-[180%] bg-black opacity-0 w-[250px] h-[400px] right-[-20%]"
               ref={menuRef}
               onMouseOut={() => {
                 anime({
@@ -69,6 +55,10 @@ export default function ProfileMenu({ pic }: { pic: string }) {
                 }, 500)
               }}
             >
+              <div className="opacity-100">
+                <h1 className="text-white">hello</h1>
+
+              </div>
             </div>
           </div>
 

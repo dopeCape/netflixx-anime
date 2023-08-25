@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 'use client'
 
 
@@ -38,15 +39,14 @@ export default function NavBar() {
   }
   return (
     <div className="flex h-full w-full bg-transparent ">
-      <Image src={NetflixLogo} className="ml-16 h-[80px] w-[150px] relative top-[10%] cursor-pointer " onClick={() => {
+      <Image src={NetflixLogo} className="ml-16 h-[70px] w-[150px] relative top-[20%] cursor-pointer " onClick={() => {
         if (pathname != "/browse") {
-          handlePush("browse")
-
+          handlePush("browse");
         }
 
-      }} />
+      }} alt={""} />
       <div className="ml-10  mt-5 flex h-full w-[20%] flex-wrap content-center justify-around text-white">
-        <h1 className={`${pathname != "/browse" ? "hover:text-gray-400" : null}`} style={pathname == "/browse" ? {
+        <h1 className={`${pathname != "/browse" ? "hover:text-gray-400" : null} text-[14px]`} style={pathname == "/browse" ? {
           fontWeight: "bold",
           cursor: "default"
         } : {
@@ -60,7 +60,7 @@ export default function NavBar() {
 
           }}
         >Home</h1>
-        <h1 className={`${pathname != "/movies" ? "hover:text-gray-400" : null}`} style={pathname == "/movies" ? {
+        <h1 className={`${pathname != "/movies" ? "hover:text-gray-400" : null} text-[14px]`} style={pathname == "/movies" ? {
           fontWeight: "bold",
           cursor: "default"
         } : {
@@ -75,7 +75,7 @@ export default function NavBar() {
           }}
 
         >Movies</h1>
-        <h1 className={`${pathname != "/mylist" ? "hover:text-gray-400" : null}`} style={pathname == "/mylist" ? {
+        <h1 className={`${pathname != "/mylist" ? "hover:text-gray-400" : null} text-[14px]`} style={pathname == "/mylist" ? {
           fontWeight: "bold",
           cursor: "default"
         } : {
@@ -90,7 +90,7 @@ export default function NavBar() {
           }}
 
         >My list</h1>
-        <h1 className={`${pathname != "/genre" ? "hover:text-gray-400" : null}`} style={pathname == "/genre" ? {
+        <h1 className={`${pathname != "/genre" ? "hover:text-gray-400" : null}text-[14px]`} style={pathname == "/genre" ? {
           fontWeight: "bold",
           cursor: "default"
         } : {
@@ -107,7 +107,7 @@ export default function NavBar() {
         >Browse by genre</h1>
       </div>
 
-      <div className="ml-auto mr-16 mt-5 flex flex h-full w-[20%] flex-wrap content-center justify-end">
+      <div className="ml-auto mr-16 mt-5  flex h-full w-[20%] flex-wrap content-center justify-end">
         <div className="w-[250px] flex content-end flex-wrap">
           <SearchInput />
         </div>
