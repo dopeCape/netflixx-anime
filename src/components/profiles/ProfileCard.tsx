@@ -4,12 +4,14 @@ import { useRouter } from "next/router";
 interface ProfileCardProps {
   url: string;
   name: string;
+  id: string;
 }
 
-export default function ProfileCard({ name, url }: ProfileCardProps) {
+export default function ProfileCard({ name, url, id }: ProfileCardProps) {
   const router = useRouter();
 
   const handleClick = () => {
+    window.localStorage.setItem("profile", id)
     void router.push("/browse");
   };
 

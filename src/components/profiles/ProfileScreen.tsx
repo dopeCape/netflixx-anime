@@ -53,7 +53,6 @@ export default function ProfileScreen() {
       addProfile(mutateProfile.data.create_profile)
       setNewProfile(false);
       setName("")
-      localStorage.setItem("profile", mutateProfile.data.create_profile.id)
       mutateProfile.reset()
     }
   }, [user, mutateProfile])
@@ -169,7 +168,7 @@ export default function ProfileScreen() {
                       key={index}
                       className="h-[400px] w-[250px] cursor-pointer overflow-hidden rounded-[10px]  object-contain "
                     >
-                      <ProfileCard url={profile.DisplayPisc} name={profile.name} />
+                      <ProfileCard url={profile.DisplayPisc} name={profile.name} id={profile.id} />
                     </div>
                   );
                 })}

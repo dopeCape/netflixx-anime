@@ -13,8 +13,7 @@ export default function Browse() {
   const bannerTxtRef = useRef();
   const bannerImageRef = useRef();
   const [init, setInit] = useState<boolean>(false);
-  const leftOpacDev = useRef();
-  const [muted, setMuted] = useState(true);
+  const leftOpacDev = useRef(); const [muted, setMuted] = useState(true);
   const bannerAnime = api.anime.getBannerAnime.useQuery(undefined, {
     refetchOnWindowFocus: false,
     refetchOnMount: false,
@@ -31,19 +30,18 @@ export default function Browse() {
         targets: leftOpacDev.current,
         opacity: videoVisible ? [1, 0] : [0, 1],
         duration: 500,
-
       }
-
     )
     anime({
       targets: videoVisible ? videoRef.current : bannerImageRef.current,
       ...animationProps,
+      opacity: 1,
       duration: 500,
       easing: 'easeInOutQuad',
     });
   }, [videoVisible]);
-
   useEffect(() => {
+
     if (bannerAnime.data) {
       const {
         url: videoSource,
@@ -59,7 +57,7 @@ export default function Browse() {
             hlsRef.current.on(Hls.Events.MANIFEST_PARSED, () => {
               if (videoRef.current?.paused) {
                 videoRef.current.currentTime = startSeconds;
-                void videoRef.current.play();
+                void videoRef.current.play()
               }
             });
 
@@ -113,15 +111,14 @@ export default function Browse() {
       }
     }
     return () => {
-      if (hlsRef.current) {
-      }
+
     };
   }, [bannerAnime, init]);
 
   return (
     <div className="flex flex-col max-w-screen overflow-hidden">
       <div className="flex  flex-col    relative  bg-black h-screen">
-        <div className=" z-50 h-[5%] w-full  bg-transparent">
+        <div className=" fixed z-[60] h-[7%] w-full  bg-transparent">
           <NavBar />
         </div>
         <div className="absolute top-0 z-40 h-[7%] w-full   bg-gradient-to-b from-black via-black-opacity-70 to-transparent"></div>
@@ -176,9 +173,10 @@ export default function Browse() {
             </button>
             <button className="flex flex-wrap justify-center content-around w-[250px] bg-[#6d6d6e] opacity-70 hover:opacity-30 py-4 rounded-[5px] ml-5 border-none outline-none ">
               <FontAwesomeIcon icon={faCircleInfo}
-                className="text-[35px] mr-3 text-white "
+                className="text-[35px] mr-3 text-white  "
               ></FontAwesomeIcon>
               <span className="text-[25px] text-white">More Info</span>
+
             </button>
           </div>
         </div>
@@ -186,7 +184,6 @@ export default function Browse() {
         </div>
       </div>
       <div className="bg-netflix_black h-screen w-screen">
-
       </div>
     </div>
   );
