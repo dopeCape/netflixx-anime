@@ -125,6 +125,7 @@ export default function NavBar() {
         {status == "authenticated" ?
           <ProfileMenu
             pic={user.profiles.filter((p) => p.id == profileId)[0]?.DisplayPisc}
+
           />
           :
           <div className="w-[80px] ml-5">

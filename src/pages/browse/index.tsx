@@ -110,9 +110,7 @@ export default function Browse() {
         }
       }
     }
-    return () => {
 
-    };
   }, [bannerAnime, init]);
 
   return (
