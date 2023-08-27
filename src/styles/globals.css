@@ -22,3 +22,16 @@
   background-repeat: repeat-x;
   background-size: 100% 100%;
 }
+/* Assuming you have a CSS file for your component */
+/* This style hides the scrollbar */
+.overflow-x-scroll::-webkit-scrollbar {
+  width: 0.5em; /* Adjust as needed */
+}
+
+.overflow-x-scroll::-webkit-scrollbar-track {
+  background: transparent; /* Set a background color if desired */
+}
+
+.overflow-x-scroll::-webkit-scrollbar-thumb {
+  background-color: transparent; /* Set a background color if desired */
+}

@@ -7,6 +7,7 @@ import { useState, useEffect, useRef } from "react";
 import anime from "animejs";
 import Hls from "hls.js";
 import { api } from "@/utils/api";
+import Row from "@/components/row/Row";
 export default function Browse() {
   const videoRef = useRef<HTMLVideoElement>();
   const [videoVisible, setVideoVisible] = useState(true);
@@ -179,6 +180,10 @@ export default function Browse() {
           </div>
         </div>
         <div className="absolute top-[90%] first_div w-screen h-[15%] z-50">
+          <div className="absolute h-[290px] z-[60] top-[-30%] "
+          >
+            <Row title="Popular on Netflixx" />
+          </div>
         </div>
       </div>
       <div className="bg-netflix_black h-screen w-screen">

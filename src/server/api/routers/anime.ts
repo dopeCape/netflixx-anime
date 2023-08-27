@@ -15,7 +15,7 @@ const bannerAnimes = [
     name: "naruto-shippuden",
     logo: "shippuden_logo.png",
     url: "https://www014.vipanicdn.net/streamhls/f23efce39606d64216a0023544f49bb4/ep.476.1677612506.720.m3u8",
-    img: "naruto_shippuden_banner.png",
+    img: "naruto_shippuden_banner.webp",
     start: 660,
     dis: "a young ninja who seeks recognition from his peers and dreams of becoming the Hokage, the leader of his village.",
     end: 720,
