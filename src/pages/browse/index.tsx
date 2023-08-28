@@ -71,7 +71,7 @@ export default function Browse() {
                 anime({
                   targets: imageRef.current,
                   width: "550px",
-                  top: "25%",
+                  translateY: -20,
                   duration: 800,
                   complete: () => {
                     setVideoVisible(false)
@@ -81,7 +81,7 @@ export default function Browse() {
                 anime({
                   targets: bannerTxtRef.current,
                   opacity: "1",
-                  top: "55%",
+                  translateY: -10,
                   duration: 800,
                   easing: "easeOutQuad",
                 })
@@ -90,7 +90,7 @@ export default function Browse() {
                 anime({
                   targets: imageRef.current,
                   width: "300px",
-                  top: "55%",
+                  translateY: 280,
                   duration: 800,
                   easing: "easeOutQuad",
                   begin: (_a) => {
@@ -100,7 +100,7 @@ export default function Browse() {
                 anime({
                   targets: bannerTxtRef.current,
                   opacity: "0",
-                  top: "60%",
+                  translateY: 30,
                   duration: 400,
                   easing: "easeOutQuad",
                 })
@@ -125,7 +125,7 @@ export default function Browse() {
         <div className="absolute top-0  h-screen w-screen overflow-hidden ">
           <img
             src={bannerAnime.data?.logo}
-            className="absolute top-[25%] z-50 ml-10 w-[550px] "
+            className="absolute top-[25%] z-50 ml-16 w-[550px] "
             ref={imageRef}
           />
           <h1

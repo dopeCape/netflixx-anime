@@ -80,6 +80,7 @@ export default function Row({ title }: IRowProp) {
           if (scrollContainerRef.current) {
             const newStartIndex = (elementsPerSet + 1) % animes.length;
             setClick(true);
+            const newScroll = newStartIndex * width + 16;
             anime({
               targets: scrollContainerRef.current,
               scrollRight: newStartIndex * width + 16,
@@ -89,7 +90,6 @@ export default function Row({ title }: IRowProp) {
           }
         }}
       />
-
       <div className="w-16 h-[160px] bg-black opacity-80 absolute right-0 z-50 top-[17.3%] text-white"
         onClick={() => {
           if (scrollContainerRef.current) {
