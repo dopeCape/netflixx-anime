@@ -1,3 +1,4 @@
+
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import Card from "../card/Card";
@@ -11,7 +12,6 @@ export default function Row({ title }: IRowProp) {
   const [animes, setAnime] = useState([]);
   const [clicked, setClick] = useState<boolean>(false);
   const [width, setWidth] = useState<number>(0);
-  const [currentScroll, setCurrnetScroll] = useState(0);
   const elementsPerSet = 6;
   const scrollContainerRef = useRef(null);
 
@@ -26,16 +26,15 @@ export default function Row({ title }: IRowProp) {
     fetchData();
   }, []);
 
-  const scrollToNextSet = () => {
+  const scrollToSet = (newStartIndex) => {
     if (scrollContainerRef.current) {
-      const newStartIndex = (elementsPerSet + 1) % animes.length;
       setClick(true);
       anime({
         targets: scrollContainerRef.current,
         scrollLeft: newStartIndex * width + 16,
         duration: 500,
         easing: "linear"
-      })
+      });
     }
   };
 
@@ -43,20 +42,19 @@ export default function Row({ title }: IRowProp) {
     <div className="flex h-full flex-col">
       <h1
         className="ml-16 text-[28px] font-bold text-white"
-        onClick={scrollToNextSet}
       >
         {title}
       </h1>
       <div
-        className="mt-2 flex h-[90%] w-screen gap-3 overflow-scroll overflow-x-scroll relative"
+        className="mt-2 flex h-[90%] w-screen gap-3   relative"
         style={{ marginLeft: `${clicked ? "0px" : "4rem"}` }}
         ref={scrollContainerRef}
       >
-        {animes.concat(animes).map((a, index) => {
+        {animes.map((a, index) => {
           return (
             <div
               key={index}
-              className="h-[160px] flex-shrink-0 rounded-[5px] bg-red-400 relative"
+              className=" flex-shrink-0 rounded-[5px] bg-transparent relative"
               data-key={index}
             >
               <Card
@@ -71,41 +69,26 @@ export default function Row({ title }: IRowProp) {
             </div>
           );
         })}
-
-        {/* {clicked && <div className="w-16 h-[160px] bg-black opacity-80 absolute left-0 z-50 top-0" />} */}
       </div>
-
-      <div className="w-14 h-[160px] bg-black opacity-80 absolute left-0 z-50 top-[17.3%]  cursor-pointer"
+      {clicked && (
+        <div
+          className="w-14 h-[160px] bg-black opacity-80 absolute left-0 z-50 top-[17.3%]  cursor-pointer"
+          onClick={() => {
+            const newStartIndex = (animes.length - elementsPerSet + 1) % animes.length;
+            scrollToSet(newStartIndex);
+          }}
+        />
+      )}
+      <div
+        className="w-16 h-[160px] bg-black opacity-80 fixed right-0 z-[60] top-[17.3%] text-white cursor-pointer"
         onClick={() => {
-          if (scrollContainerRef.current) {
-            const newStartIndex = (elementsPerSet + 1) % animes.length;
-            setClick(true);
-            const newScroll = newStartIndex * width + 16;
-            anime({
-              targets: scrollContainerRef.current,
-              scrollRight: newStartIndex * width + 16,
-              duration: 500,
-              easing: "linear"
-            })
-          }
+          setClick(true)
+          const newStartIndex = (elementsPerSet + 1) % animes.length;
+          scrollToSet(newStartIndex);
         }}
       />
-      <div className="w-16 h-[160px] bg-black opacity-80 absolute right-0 z-50 top-[17.3%] text-white"
-        onClick={() => {
-          if (scrollContainerRef.current) {
-            const newStartIndex = (elementsPerSet + 1) % animes.length;
-            setClick(true);
-            anime({
-              targets: scrollContainerRef.current,
-              scrollLeft: newStartIndex * width + 16,
-              duration: 500,
-              easing: "linear"
-            })
-          }
-        }}
-      >
-      </div>
 
     </div>
   );
 }
+

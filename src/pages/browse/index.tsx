@@ -61,8 +61,6 @@ export default function Browse() {
                 void videoRef.current.play()
               }
             });
-
-
           }
           const timeUpdateHandler = () => {
             if (videoRef.current) {
@@ -179,8 +177,8 @@ export default function Browse() {
             </button>
           </div>
         </div>
-        <div className="absolute top-[90%] first_div w-screen h-[15%] z-50">
-          <div className="absolute h-[290px] z-[60] top-[-30%] "
+        <div className="absolute top-[90%] first_div w-screen h-[15%] ">
+          <div className="absolute h-[290px] z-[70] top-[-30%] "
           >
             <Row title="Popular on Netflixx" />
           </div>
