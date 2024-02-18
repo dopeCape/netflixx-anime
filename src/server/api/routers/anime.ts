@@ -1,5 +1,7 @@
+import { z } from "zod";
 import { protectedProcedure, publicProcedure, createTRPCRouter } from "../trpc";
 import { ANIME } from "@consumet/extensions";
+import { getAnimeInfo, getDub } from "../anime/epFinder";
 const gogoanime = new ANIME.Gogoanime();
 const bannerAnimes = [
   {
@@ -51,11 +53,28 @@ const bannerAnimes = [
 
 export const animeRouter = createTRPCRouter({
   getAnime: publicProcedure.query(async () => {
-    const res = await gogoanime.fetchEpisodeSources("naruto-episode-48");
+    const res = await gogoanime.fetchGenreInfo("drama");
     return { res };
   }),
   getBannerAnime: publicProcedure.query(() => {
     const anime = bannerAnimes[Math.floor(Math.random() * bannerAnimes.length)];
     return anime;
   }),
+  getAnimeSource: publicProcedure
+    .input(z.string())
+    .mutation(async ({ input }) => {
+      const source = await gogoanime.fetchEpisodeSources(input);
+      const animeName = input.split("episode")[0]?.slice(0, input.split("episode")[0]?.length - 1)
+      const subURL = input.replace("episode", "dub-episode");
+      const animeInfo = await getAnimeInfo(animeName);
+      const dubUrls = await getDub(subURL);
+      const res = {
+        source,
+        animeInfo,
+        dubUrls,
+      }
+
+
+      return { res };
+    }),
 });

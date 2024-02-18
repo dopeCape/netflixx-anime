@@ -12,9 +12,9 @@
   background-image: linear-gradient(
     180deg,
     hsla(0, 0%, 8%, 0) 0,
-    hsla(0, 0%, 8%, 0.15) 15%,
-    hsla(0, 0%, 8%, 0.35) 29%,
-    hsla(0, 0%, 8%, 0.58) 44%,
+    hsla(0, 0%, 8%, 0.35) 15%,
+    hsla(0, 0%, 8%, 0.55) 29%,
+    hsla(0, 0%, 8%, 0.98) 44%,
     #141414 68%,
     #141414
   );
@@ -34,4 +34,28 @@
 
 .overflow-x-scroll::-webkit-scrollbar-thumb {
   background-color: transparent; /* Set a background color if desired */
+}
+.overflow-y-scroll::-webkit-scrollbar {
+  width: 0.5em; /* Adjust as needed */
+}
+
+.overflow-y-scroll::-webkit-scrollbar-track {
+  background: transparent; /* Set a background color if desired */
+}
+
+.overflow-y-scroll::-webkit-scrollbar-thumb {
+  background-color: transparent; /* Set a background color if desired */
+}
+
+.preserve_z {
+  transform-style: preserve-3d;
+}
+
+video:-webkit-full-screen-ancestor:not(:-webkit-full-screen) {
+  display: none;
+}
+
+.no_transtion {
+  transition: left 0s, right 0s, width 300ms ease-in-out,
+    height 300ms ease-in-out;
 }

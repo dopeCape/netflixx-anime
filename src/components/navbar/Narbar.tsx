@@ -21,7 +21,6 @@ export default function NavBar() {
   const [profileUrl, setProfileurl] = useState<string>("")
   const [profileId, setProfileId] = useState("")
   const divRef = useRef(null);
-
   const handleScreolChangeBg = () => {
     anime({
       targets: divRef.current,

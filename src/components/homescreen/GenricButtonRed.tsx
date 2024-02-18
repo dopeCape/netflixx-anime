@@ -1,5 +1,3 @@
-import Loader from "../../Eclipse-1s-200px.svg";
-
 export default function GenricReaButton({ text, func, state, disabled }) {
   return (
     <button

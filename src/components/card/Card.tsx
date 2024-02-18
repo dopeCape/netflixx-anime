@@ -2,6 +2,7 @@
 /* eslint-disable @next/next/no-img-element */
 import anime from "animejs";
 import { useRef, useState } from "react";
+import CardDeatails from "./CardDetails";
 
 interface ICardProp {
   url: string;
@@ -9,17 +10,20 @@ interface ICardProp {
   synopsis: string;
   rating: number;
   width: number;
+  currentIndex: number;
+  index: number;
 }
 export default function Card({
   url,
   name,
-  synopsis,
-  rating,
   width,
+  currentIndex,
+  index
 }: ICardProp) {
   const hoverRef = useRef(null);
   const [hovered, setHoverd] = useState<boolean>(false);
   const contentRef = useRef(null);
+  const parentRef = useRef(null)
   const cardRef = useRef(null);
   const titleRef = useRef(null);
   const opacRef = useRef(null);
@@ -28,9 +32,14 @@ export default function Card({
     hoverRef.current = setTimeout(() => {
       setHoverd(true);
       setTimeout(() => {
+
+        contentRef.current.style.Zindex = 100;
+        imageRef.current.style.borderBottomLeftRadius = "0px"
+        imageRef.current.style.borderBottomRightRadius = "0px"
         anime({
           targets: cardRef.current,
           scale: 1.5,
+          translateX: index % 6 == 1 ? 45 : index % 6 == 0 ? -50 : 0,
           duration: 400,
           translateY: -50,
           easing: "easeOutExpo",
@@ -43,7 +52,10 @@ export default function Card({
         })
         anime({
           targets: contentRef.current,
-          scale: 1.5,
+          translateY: -20,
+          translateX: index % 6 == 1 ? 68 : index % 6 == 0 ? -76 : 0,
+          scaleY: 1.2,
+          scaleX: 1.5,
           opacity: 1,
           duration: 400,
           easing: "easeOutExpo",
@@ -62,6 +74,7 @@ export default function Card({
   const handleOnMouseDown = () => {
     if (hovered) {
       setTimeout(() => {
+        imageRef.current.style.borderRadius = "5px"
         anime({
           targets: titleRef.current,
           opacity: 1,
@@ -76,7 +89,10 @@ export default function Card({
         })
         anime({
           targets: contentRef.current,
-          scale: 1,
+          scaleY: 1,
+          translateX: 0,
+          translateY: 1,
+          scaleX: 1,
           opacity: 0,
           duration: 400,
           easing: "easeOutExpo",
@@ -84,12 +100,13 @@ export default function Card({
 
         anime({
           targets: cardRef.current,
+          translateX: 0,
           scale: 1,
           duration: 400,
           translateY: 1,
           easing: "easeOutExpo",
           complete: () => {
-            cardRef.current.style.zIndex = 0;
+            parentRef.current.style.zIndex = 0;
             setHoverd(false);
           },
         });
@@ -99,14 +116,13 @@ export default function Card({
   };
   return (
     <div
-      className="relative flex h-[160px]  justify-end rounded-[5px] "
+      className="relative flex h-[160px]  justify-end rounded-[5px]  shadow-3xl  "
       style={{ width: `${width == 0 ? "100%" : width + "px"}`, zIndex: hovered ? 90 : 20 }}
+      ref={parentRef}
       onMouseEnter={handleOnMouseUp}
       onMouseLeave={handleOnMouseDown}
-
     >
       <div className="h-160px w-full"
-
         ref={cardRef}
       >
         <img
@@ -124,11 +140,12 @@ export default function Card({
         ></div>
       </div>
       {hovered &&
-        <div className="top-[100%] left-0 absolute bg-red-400 h-[160px] z-50  opacity-0 rounded-b-[5px]"
+        <div className="top-[100%] left-0 absolute bg-netflix_black h-[160px]   rounded-b-[5px] shadow-3xl   "
           ref={contentRef}
           style={{ width: `${width == 0 ? "100%" : width + "px"}`, }}
-        ></div>
-
+        >
+          <CardDeatails />
+        </div>
       }
 
     </div>

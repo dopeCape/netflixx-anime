@@ -91,7 +91,6 @@ export default function ProfileScreen() {
         <div className="flex h-full  flex-col flex-wrap content-center justify-center bg-[#141414]  "
         >
           <div className=""
-
             ref={makerRef}
           >
             <h1 className="text-[4vw] text-white">Add Profile</h1>
@@ -202,7 +201,6 @@ export default function ProfileScreen() {
             :
             <Image
               src={Loader}
-
             />
           }
         </div>

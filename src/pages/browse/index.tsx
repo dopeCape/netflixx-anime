@@ -3,16 +3,18 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVolumeXmark, faVolumeHigh, faRotateRight, faPlay, faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import NavBar from "@/components/navbar/Narbar";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import anime from "animejs";
 import Hls from "hls.js";
 import { api } from "@/utils/api";
 import Row from "@/components/row/Row";
+import GetUserData from "@/lib/hooks/GetUserData";
 export default function Browse() {
   const videoRef = useRef<HTMLVideoElement>();
   const [videoVisible, setVideoVisible] = useState(true);
   const bannerTxtRef = useRef();
   const bannerImageRef = useRef();
+  const user = GetUserData();
   const [init, setInit] = useState<boolean>(false);
   const leftOpacDev = useRef(); const [muted, setMuted] = useState(true);
   const bannerAnime = api.anime.getBannerAnime.useQuery(undefined, {
@@ -20,6 +22,7 @@ export default function Browse() {
     refetchOnMount: false,
     retryOnMount: false,
   });
+
   const imageRef = useRef();
   const hlsRef = useRef(null);
   useEffect(() => {
@@ -42,7 +45,6 @@ export default function Browse() {
     });
   }, [videoVisible]);
   useEffect(() => {
-
     if (bannerAnime.data) {
       const {
         url: videoSource,
@@ -113,14 +115,14 @@ export default function Browse() {
   }, [bannerAnime, init]);
 
   return (
-    <div className="flex flex-col max-w-screen overflow-hidden">
-      <div className="flex  flex-col    relative  bg-black h-screen">
-        <div className=" fixed z-[60] h-[7%] w-full  bg-transparent">
+    <div className="flex flex-col max-w-screen overflow-x-hidden">
+      <div className="flex  flex-col    relative  bg-black h-screen ">
+        <div className=" fixed z-[160] h-[7%] w-full  bg-transparent">
           <NavBar />
         </div>
         <div className="absolute top-0 z-40 h-[7%] w-full   bg-gradient-to-b from-black via-black-opacity-70 to-transparent"></div>
         <div className="left_opac left-0 absolute top-0 z-40 h-screen w-[60%] opacity-0  " ref={leftOpacDev}></div>
-        <div className="absolute top-0  h-screen w-screen overflow-hidden ">
+        <div className="absolute top-0  h-screen w-screen overflow-x-hidden ">
           <img
             src={bannerAnime.data?.logo}
             className="absolute top-[25%] z-50 ml-16 w-[550px] "
@@ -143,7 +145,6 @@ export default function Browse() {
                 className="rounded-full  border-white border-[2px] h-[60px] w-[60px] absolute z-50 top-[70%] right-[3%] cursor-pointer flex flex-wrap justify-center content-center"
                 onClick={() => {
                   setVideoVisible(true)
-
                 }}
               ><FontAwesomeIcon icon={faRotateRight} className="text-[25px] text-white" /></div>
           }
@@ -177,14 +178,18 @@ export default function Browse() {
             </button>
           </div>
         </div>
-        <div className="absolute top-[90%] first_div w-screen h-[15%] ">
-          <div className="absolute h-[290px] z-[70] top-[-30%] "
+        <div className="absolute top-[90%] first_div w-screen h-[15%] z-50 ">
+          <div className="absolute h-[290px]  top-[-30%] "
           >
             <Row title="Popular on Netflixx" />
           </div>
         </div>
       </div>
-      <div className="bg-netflix_black h-screen w-screen">
+      <div className="bg-netflix_black h-screen w-screen  flex flex-col ">
+        <div className=" h-[290px]   mt-[5%]  "
+        >
+          <Row title="Popular on Netflixx" />
+        </div>
       </div>
     </div>
   );
